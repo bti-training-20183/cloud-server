@@ -15,10 +15,10 @@ class MessageHandler:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             try:
                 s.connect(('rabbitmq', 5672))
-                print("Connected")
+                print("Connected to RabbitMQ")
                 isreachable = True
             except socket.error as e:
-                print("Not connected")
+                print("Not connected to RabbitMQ")
                 time.sleep(2)
             s.close()
         if isreachable:

@@ -16,6 +16,7 @@ class DataStoreHandler:
             access_key=access_key,
             secret_key=secret_key,
             secure=False)
+        print('Connected to Minio')
         try:
             self.minioClient.make_bucket(bucket_name)
         except BucketAlreadyOwnedByYou as err:
@@ -37,7 +38,7 @@ class DataStoreHandler:
     def download(self, from_path, to_path):
         try:
             f = self.minioClient.fget_object(
-                self.bucket_name, to_path, from_path)
+                self.bucket_name, from_path, to_path)
             return f
         except ResponseError as err:
             print(err)
