@@ -32,8 +32,9 @@ def upload():
     f = request.files.to_dict()['data']
     filename = f.filename
     from_path = 'tmp/'+filename
-    to_path = '/' + filename.split('.')[0] + '/raw/' + filename
+    to_path = filename.split('.')[0] + '/raw/' + filename
     f.save(from_path)
+    DataStore_Handler.upload(from_path,to_path)
     msg = {
         "name": filename,
         "type": filename.split('.')[1],
