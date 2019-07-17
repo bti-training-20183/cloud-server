@@ -31,18 +31,19 @@ class DataStoreHandler:
 
     def upload(self, from_path, to_path):
         try:
+            print("Uploading...")
             self.minioClient.fput_object(self.bucket_name, to_path, from_path)
+            print("Upload Sucess")
         except ResponseError as err:
             return err
 
     def download(self, from_path, to_path):
         try:
-            f = self.minioClient.fget_object(
-                self.bucket_name, from_path, to_path)
-            return f
+            print("Downloading...")
+            self.minioClient.fget_object(self.bucket_name, from_path, to_path)
+            print("Download Success")
         except ResponseError as err:
             print(err)
-
 
 DataStore_Handler = DataStoreHandler(
     config.MINIO_URL, config.MINIO_ACCESS_KEY, config.MINIO_SECRET_KEY, config.MINIO_BUCKET)
