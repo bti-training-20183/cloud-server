@@ -1,5 +1,5 @@
 import config
-from utils.message_handler import Message_Handler
+from utils.message_handler import MessageHandler
 from utils.datastore_handler import DataStore_Handler
 from utils.database_handler import Database_Handler
 from flask import Flask, request, flash, redirect
@@ -30,18 +30,22 @@ def upload():
     print("___")
     print(request.files.to_dict())
     f = request.files.to_dict()['data']
-    filename = f.filename
-    from_path = 'tmp/'+filename
-    to_path = filename.split('.')[0] + '/raw/' + filename
+    fullname = f.filename
+    filename, file_extension = os.path.splitext(fullname)
+    from_path = 'tmp/' + fullname
+    to_path = filename + '/raw/' + filename + file_extension
     f.save(from_path)
     DataStore_Handler.upload(from_path,to_path)
+    os.remove(from_path)
     msg = {
         "name": filename,
-        "type": filename.split('.')[1],
+        "type": file_extension,
         "date": request.form['date'],
         "file_uri": to_path
     }
+    Message_Handler = MessageHandler(config.RABBITMQ_CONNECTION)
     Message_Handler.sendMessage('from_client', json.dumps(msg))
+    Message_Handler.close()
     Database_Handler.insert(msg)
     return 'Hello'
 
