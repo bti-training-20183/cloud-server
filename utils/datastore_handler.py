@@ -16,7 +16,7 @@ class DataStoreHandler:
             access_key=access_key,
             secret_key=secret_key,
             secure=False)
-        print('Connected to Minio')
+        print('Connected to DataStore')
         try:
             self.minioClient.make_bucket(bucket_name)
         except BucketAlreadyOwnedByYou as err:
@@ -45,5 +45,10 @@ class DataStoreHandler:
         except ResponseError as err:
             print(err)
 
-DataStore_Handler = DataStoreHandler(
+
+Minio_Handler = DataStoreHandler(
     config.MINIO_URL, config.MINIO_ACCESS_KEY, config.MINIO_SECRET_KEY, config.MINIO_BUCKET)
+
+
+S3_Handler = DataStoreHandler(
+    config.S3_ENDPOINT, config.S3_ACCESS_KEY, config.S3_SECRET_KEY, config.S3_BUCKET)

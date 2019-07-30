@@ -1,6 +1,6 @@
 import config
 from utils.message_handler import MessageHandler
-from utils.datastore_handler import DataStore_Handler
+from utils.datastore_handler import Minio_Handler, S3_Handler
 from utils.database_handler import Database_Handler
 from flask import Flask, request, flash, redirect
 from flask_cors import CORS, cross_origin
@@ -23,8 +23,8 @@ def hello():
     return 'Hello, World!'
 
 
-@app.route('/upload', methods=["POST"])
-def upload():
+@app.route('/create', methods=["POST"])
+def create():
     # print(request)
     print(request.form)
     print("___")
@@ -35,11 +35,12 @@ def upload():
     from_path = 'tmp/' + fullname
     to_path = filename + '/raw/' + filename + file_extension
     f.save(from_path)
-    DataStore_Handler.upload(from_path,to_path)
+    Minio_Handler.upload(from_path, to_path)
     os.remove(from_path)
     msg = {
         "name": filename,
         "type": file_extension,
+        "job": 'create',
         "date": request.form['date'],
         "file_uri": to_path
     }
@@ -48,11 +49,6 @@ def upload():
     Message_Handler.close()
     Database_Handler.insert(msg)
     return 'Hello'
-
-
-@app.route('/model/<model_id>', methods=["GET"])
-def getModel(model_id):
-    return 'model'
 
 
 if __name__ == '__main__':
