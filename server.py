@@ -37,17 +37,26 @@ def create():
     f.save(from_path)
     Minio_Handler.upload(from_path, to_path)
     os.remove(from_path)
+    # SAVE LOGS TO MONGO
+    logs = {
+        "name": filename,
+        "type": file_extension,
+        "date": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "file_uri": to_path
+    }
+    logged_info = Database_Handler.insert(logs)
+    Database_Handler.insert(msg)
+
     msg = {
         "name": filename,
         "type": file_extension,
-        "job": 'create',
-        "date": request.form['date'],
-        "file_uri": to_path
+        "date": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "file_uri": to_path,
+        "cloud_server_id": logged_info.inserted_id
     }
     Message_Handler = MessageHandler(config.RABBITMQ_CONNECTION)
     Message_Handler.sendMessage('from_client', json.dumps(msg))
     Message_Handler.close()
-    Database_Handler.insert(msg)
     return 'Hello'
 
 
