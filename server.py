@@ -24,6 +24,23 @@ def hello():
     return 'Hello, World!'
 
 
+@app.route('/process')
+def process():
+    current_processor_id = request.args.get('current_processor_id')
+    next_processor = request.args.get('next_processor')
+    #TODO check log
+    if next_processor == 'preprocessor':
+        log = Database_Handler.find_in_collection('preprocessor',
+                            {'cloud_server_id': current_processor_id})
+    elif next_processor == 'creator':
+        log = Database_Handler.find_in_collection('creator',
+                            {'preprocessor_id': current_processor_id})
+    elif next_processor == 'deployer':
+        log = Database_Handler.find_in_collection('deployer',
+                            {'creator_id': current_processor_id})
+    processor_id = str(log.get('_id', 0)) if log != None else 0
+    return json.dumps({'success': True, 'id': processor_id, '1': current_processor_id, '2': next_processor})    
+
 @app.route('/create', methods=["POST"])
 def create():
     print(request.form)
@@ -54,7 +71,7 @@ def create():
     Message_Handler = MessageHandler(config.RABBITMQ_CONNECTION)
     Message_Handler.sendMessage('from_client', json.dumps(msg))
     Message_Handler.close()
-    return 'Hello'
+    return json.dumps({'success': True, 'id': str(logged_info.inserted_id)})
 
 
 if __name__ == '__main__':

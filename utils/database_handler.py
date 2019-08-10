@@ -17,6 +17,9 @@ class DatabaseHandler:
     def insert(self, obj):
         return self.collection.insert_one(obj)
 
+    def find_in_collection(self, collection, query):
+        return self.db[collection].find_one(query)
+
     def find_by_name(self, name):
         query = {"name": name}
         result = self.collection.find(query)
