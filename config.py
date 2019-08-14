@@ -12,7 +12,13 @@ MINIO_BUCKET = environ["MINIO_BUCKET"] if environ.get(
     "MINIO_BUCKET") else "brains"
 MONGO_URL = environ["MONGO_URL"] if environ.get("MONGO_URL") else "mongodb://localhost:27017" 
 MONGO_DB = environ["MONGO_DB"] if environ.get("MONGO_DB") else "logsDB"
-MONGO_COLLECTION = environ["MONGO_COLLECTION"] if environ.get("MONGO_COLLECTION") else "preprocessor"
+MONGO_COLLECTION = environ["MONGO_COLLECTION"] if environ.get("MONGO_COLLECTION") else "cloud_server"
+PREPROCESSOR_MONGO_COLLECTION = environ["PREPROCESSOR_MONGO_COLLECTION"] if environ.get(
+    "PREPROCESSOR_MONGO_COLLECTION") else "preprocessor"
+CREATOR_MONGO_COLLECTION = environ["CREATOR_MONGO_COLLECTION"] if environ.get(
+    "CREATOR_MONGO_COLLECTION") else "creator"
+DEPLOYER_MONGO_COLLECTION = environ["DEPLOYER_MONGO_COLLECTION"] if environ.get(
+    "DEPLOYER_MONGO_COLLECTION") else "deployer"
 S3_ENDPOINT = environ["S3_ENDPOINT"] if environ.get("S3_ENDPOINT") else "s3.amazonaws.com"
 S3_ACCESS_KEY = environ.get("S3_ACCESS_KEY")
 S3_SECRET_KEY = environ.get("S3_SECRET_KEY")
