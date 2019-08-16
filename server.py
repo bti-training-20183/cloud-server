@@ -28,15 +28,14 @@ def hello():
 def process():
     current_processor_id = request.args.get('current_processor_id')
     next_processor = request.args.get('next_processor')
-    #TODO check log
-    if next_processor == 'preprocessor':
-        log = Database_Handler.find_in_collection('preprocessor',
+    if next_processor == config.PREPROCESSOR_MONGO_COLLECTION:
+        log = Database_Handler.find_in_collection(config.PREPROCESSOR_MONGO_COLLECTION,
                             {'cloud_server_id': current_processor_id})
-    elif next_processor == 'creator':
-        log = Database_Handler.find_in_collection('creator',
+    elif next_processor == config.CREATOR_MONGO_COLLECTION:
+        log = Database_Handler.find_in_collection(config.CREATOR_MONGO_COLLECTION,
                             {'preprocessor_id': current_processor_id})
-    elif next_processor == 'deployer':
-        log = Database_Handler.find_in_collection('deployer',
+    elif next_processor == config.DEPLOYER_MONGO_COLLECTION:
+        log = Database_Handler.find_in_collection(config.DEPLOYER_MONGO_COLLECTION,
                             {'creator_id': current_processor_id})
     processor_id = str(log.get('_id', 0)) if log != None else 0
     return json.dumps({'success': True, 'id': processor_id, '1': current_processor_id, '2': next_processor})    
@@ -60,7 +59,7 @@ def create():
         "date": time.strftime("%Y-%m-%d %H:%M:%S"),
         "file_uri": to_path
     }
-    logged_info = Database_Handler.insert(logs)
+    logged_info = Database_Handler.insert(config.MONGO_COLLECTION, logs)
     msg = {
         "name": filename,
         "type": file_extension,
